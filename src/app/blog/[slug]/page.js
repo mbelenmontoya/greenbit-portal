@@ -1,5 +1,33 @@
-import { db } from "@/lib/firebase";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+// 1️⃣ Import from the Admin SDK’s modular entrypoints:
+import { initializeApp, cert, getApps } from "firebase-admin/app"
+import {
+  getFirestore as getAdminFirestore,
+  collection,
+  getDocs as getAdminDocs
+} from "firebase-admin/firestore"
+
+// 2️⃣ Initialize the Admin SDK *once* (on the server at build‐time)
+if (!getApps().length) {
+  initializeApp({
+    credential: cert({
+      projectId:     process.env.FIREBASE_PROJECT_ID,
+      clientEmail:   process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey:    process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+    }),
+  })
+}
+
+const adminDb = getAdminFirestore()
+
+export async function generateStaticParams() {
+  const snap = await getAdminDocs(collection(adminDb, "posts"))
+  const slugs = snap.docs.map((d) => d.id)
+  return slugs.map((slug) => ({ slug }))
+}
+
+
+import { db } from "@/lib/firebase"
+import { doc, getDoc } from "firebase/firestore"
 import {
   Box,
   Heading,
@@ -9,25 +37,6 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { FaTwitter, FaLinkedin } from "react-icons/fa";
-import admin from "firebase-admin";
-
-// Initialize admin once
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-    }),
-  })
-}
-const adminDb = getFirestore()
-
-export async function generateStaticParams() {
-  const snap = await adminDb.collection("posts").listDocuments()
-  const slugs = snap.map((d) => d.id)
-  return slugs.map((slug) => ({ slug }))
-}
 
 export default async function PostPage({ params }) {
   const { slug } = await params;
