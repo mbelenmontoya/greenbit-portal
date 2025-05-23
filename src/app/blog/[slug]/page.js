@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, getDocs, collection } from "firebase/firestore";
 import {
   Box,
   Heading,
@@ -9,6 +9,15 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { FaTwitter, FaLinkedin } from "react-icons/fa";
+
+export async function generateStaticParams() {
+  // Fetch all post IDs (which you’ve set equal to your slugs)
+  const snap = await getDocs(collection(db, "posts"))
+  const slugs = snap.docs.map((doc) => doc.id)
+
+  // Return an array of { slug } objects
+  return slugs.map((slug) => ({ slug }))
+}
 
 export default async function PostPage({ params }) {
   const { slug } = await params;
