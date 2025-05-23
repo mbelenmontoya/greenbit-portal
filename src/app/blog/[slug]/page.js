@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase";
-import { doc, getDoc, getDocs, collection } from "firebase/firestore";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 import {
   Box,
   Heading,
@@ -9,13 +9,23 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { FaTwitter, FaLinkedin } from "react-icons/fa";
+import admin from "firebase-admin";
+
+// Initialize admin once
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+    }),
+  })
+}
+const adminDb = getFirestore()
 
 export async function generateStaticParams() {
-  // Fetch all post IDs (which you’ve set equal to your slugs)
-  const snap = await getDocs(collection(db, "posts"))
-  const slugs = snap.docs.map((doc) => doc.id)
-
-  // Return an array of { slug } objects
+  const snap = await adminDb.collection("posts").listDocuments()
+  const slugs = snap.map((d) => d.id)
   return slugs.map((slug) => ({ slug }))
 }
 
