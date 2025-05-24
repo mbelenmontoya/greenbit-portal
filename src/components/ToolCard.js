@@ -1,37 +1,48 @@
+import { Box, Image, Heading, Text, Tag, VStack, HStack } from "@chakra-ui/react";
 
-import { Box, Image, Heading, Text, Button, VStack } from "@chakra-ui/react";
+// For now, tags and plans are dummies. Replace with real data as needed.
+const dummyTags = ["CRM"];
+const dummyPlans = ["Basic", "Elite", "Nonprofit", "Pro"];
 
 export default function ToolCard({ name, description, iconURL, launchURL }) {
   return (
     <Box
-      borderWidth="1px"
-      borderRadius="md"
+      borderRadius="lg"
       overflow="hidden"
-      _hover={{ shadow: "md" }}
-      bg="white"
+      bg="neutral.white"
+      boxShadow="sm"
+      transition="box-shadow 0.2s"
+      _hover={{ boxShadow: "lg" }}
+      display="flex"
+      flexDirection="column"
+      h="100%"
     >
-      {iconURL && (
-        <Image src={iconURL} alt={`${name} icon`} boxSize="64px" mx="auto" mt={4} />
-      )}
-      <VStack spacing={2} p={4} align="start">
-        <Heading as="h3" size="md">
+      {/* Top section with icon/logo */}
+      <Box bg="neutral.grayLight" w="full" h="80px" display="flex" alignItems="center" justifyContent="center">
+        {iconURL && (
+          <Image src={iconURL} alt={`${name} icon`} maxH="48px" maxW="120px" objectFit="contain" />
+        )}
+      </Box>
+      <VStack align="start" spacing={3} p={6} flex={1}>
+        <Heading as="h3" size="md" color="brand.400" fontWeight="bold" noOfLines={2}>
           {name}
         </Heading>
-        <Text fontSize="sm" color="gray.600">
+        <Text color="neutral.grayDark" fontSize="md" noOfLines={3}>
           {description}
         </Text>
-        <Button
-          as="a"
-          href={launchURL}
-          target="_blank"
-          rel="noopener"
-          size="sm"
-          colorScheme="blue"
-          mt={2}
-        >
-          Launch
-        </Button>
+        <HStack spacing={2} mt={2}>
+          {dummyTags.map((tag) => (
+            <Tag key={tag} bg="neutral.grayLight" color="neutral.grayDark" fontWeight="medium" borderRadius="md" px={3} py={1} fontSize="sm">
+              {tag}
+            </Tag>
+          ))}
+        </HStack>
+        <Box flex={1} />
       </VStack>
+      {/* Bottom bar for included plans */}
+      <Box bg="brand.400" color="neutral.white" px={6} py={3} fontWeight="medium" fontSize="sm">
+        Included with: {dummyPlans.join(", ")}
+      </Box>
     </Box>
   );
 }

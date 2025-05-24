@@ -1,7 +1,10 @@
 import { db } from "@/lib/firebase";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
+import { Box, SimpleGrid } from "@chakra-ui/react";
 import BlogCard from "@/components/BlogCard";
+import Hero from "@/components/Hero";
+import BlogFilter from "@/components/BlogFilter";
+import NewsletterBox from "@/components/NewsletterBox";
 
 export default async function BlogListPage() {
   let posts = [];
@@ -17,15 +20,21 @@ export default async function BlogListPage() {
   }
 
   return (
-    <Box as="section" py={16} px={4}>
-      <Heading as="h2" size="xl" textAlign="center" mb={8}>
-        Blog & News
-      </Heading>
-      <SimpleGrid columns={[1, 2, 3]} spacing={6}>
-        {posts.map((post) => (
-          <BlogCard key={post.id} post={post} />
-        ))}
-      </SimpleGrid>
+    <Box>
+      <Hero
+        label="Blog"
+        title="News & Updates"
+        description="A collection of missives and messages, along with nerd talk and company carryings-on."
+      />
+      <BlogFilter />
+      <Box as="section" py={16} px={4} maxW="7xl" mx="auto">
+        <SimpleGrid columns={[1, 2, 3]} spacing={6}>
+          {posts.map((post) => (
+            <BlogCard key={post.id} post={post} />
+          ))}
+        </SimpleGrid>
+      </Box>
+      <NewsletterBox />
     </Box>
   );
 }

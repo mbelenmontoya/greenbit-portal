@@ -2,7 +2,8 @@
 import { db } from "@/lib/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import ToolCard from "@/components/ToolCard";
-import { SimpleGrid, Box, Heading } from "@chakra-ui/react";
+import { SimpleGrid, Box, Input, Select, Flex, Text } from "@chakra-ui/react";
+import Hero from "@/components/Hero";
 
 export default async function ToolsPage() {
   let tools = [];
@@ -14,21 +15,55 @@ export default async function ToolsPage() {
   }
 
   return (
-    <Box as="section" py={16} px={4}>
-      <Heading as="h2" size="xl" textAlign="center" mb={8}>
-        Our Tools
-      </Heading>
-      <SimpleGrid columns={[1, 2, 3]} spacing={6}>
-        {tools.map((t) => (
-          <ToolCard
-            key={t.id}
-            name={t.name}
-            description={t.description}
-            iconURL={t.iconURL}
-            launchURL={t.launchURL}
+    <Box>
+      <Hero
+        label="Tools"
+        title="Custom Tools for Finance & IT"
+        description="Explore our suite of custom tools designed to empower your financial and IT decisions."
+      />
+      {/* Search and Filter Row */}
+      <Flex maxW="7xl" mx="auto" mt={8} mb={4} px={4} align="center" gap={6} wrap="wrap" justify="space-between">
+        <Flex align="center" gap={2} flex={1} minW="260px">
+          <Text color="neutral.grayDark" fontWeight="medium">Search</Text>
+          <Input
+            placeholder="Enter your search term."
+            maxW="320px"
+            bg="neutral.white"
+            borderColor="neutral.grayLight"
+            fontWeight="bold"
+            fontSize="lg"
+            _placeholder={{ color: "neutral.grayDark", fontWeight: "bold" }}
           />
-        ))}
-      </SimpleGrid>
+        </Flex>
+        <Flex align="center" gap={2}>
+          <Text color="neutral.grayDark" fontWeight="medium">Sort by</Text>
+          <Select
+            maxW="180px"
+            bg="neutral.white"
+            borderColor="neutral.grayLight"
+            fontWeight="bold"
+            fontSize="md"
+            defaultValue="default"
+          >
+            <option value="default">Default</option>
+            <option value="name">Name</option>
+            <option value="category">Category</option>
+          </Select>
+        </Flex>
+      </Flex>
+      <Box as="section" py={16} px={4} maxW="7xl" mx="auto">
+        <SimpleGrid columns={[1, 2, 3]} spacing={6}>
+          {tools.map((t) => (
+            <ToolCard
+              key={t.id}
+              name={t.name}
+              description={t.description}
+              iconURL={t.iconURL}
+              launchURL={t.launchURL}
+            />
+          ))}
+        </SimpleGrid>
+      </Box>
     </Box>
   );
 }

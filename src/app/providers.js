@@ -1,10 +1,13 @@
 // src/app/providers.js
+'use client'
+
 import { ChakraProvider } from "@chakra-ui/react"
+import theme from '../theme'
 
 export default function Providers({ children }) {
   return (
-    <ChakraProvider>
-        {children}
+    <ChakraProvider theme={theme}>
+      {children}
     </ChakraProvider>
   )
 }
